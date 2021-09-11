@@ -41,4 +41,4 @@ Build a music manager on `client[property]`. If no property supports it'll autom
 - `has (Snowflake id)` : if we have connection of the guild of given id in our data
 - `get (Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
 - `join (VoiceChannel channel, { Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given.
-- `leave (Snowflake id)` leave the guild of given id.
+- `leave (Snowflake id)` : leave the guild of given id.

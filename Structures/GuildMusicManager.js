@@ -1,13 +1,14 @@
 const EventEmitter = require('events');
 const { createAudioPlayer, getVoiceConnection } = require('@discordjs/voice');
 
-class GuildMusicManager extends EventEmiter {
-  constructor({ client, channel, maxQueueSize }) {
+class GuildMusicManager extends EventEmitter {
+  constructor({ client, manager, channel, maxQueueSize }) {
     super();
     this.client = client;
     this.guild = channel.guild;
     this.channel = channel;
-    this.voiceState = channel.guild.me.voiceState;
+    this.manager = manager;
+    this.voiceState = channel.guild.me.voice;
     this.player = createAudioPlayer();
     this.queue = [];
     this.MAX_QUEUE_SIZE = maxQueueSize ?? 99;
@@ -21,6 +22,7 @@ class GuildMusicManager extends EventEmiter {
 
   leave() {
     getVoiceConnection(this.guild.id).destroy();
+    this.manager._data.delete(this.guild.id);
   }
 }
 

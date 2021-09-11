@@ -1,10 +1,10 @@
 const EventEmitter = require('events');
 const GuildMusicManager = require('./GuildMusicManager.js');
 const { joinVoiceChannel,
-        enterState,
+        entersState,
         VoiceConnectionStatus } = require('@discordjs/voice');
 
-class ClientMusicManager extends EventEmmiter {
+class ClientMusicManager extends EventEmitter {
   constructor(client) {
     if (!client) throw new Error('MISSING_CLIENT');
     super();
@@ -22,10 +22,7 @@ class ClientMusicManager extends EventEmmiter {
     return undefined;
   }
 
-  join(channel, {
-    setMute = false,
-    setDeaf = false
-  }) {
+  join({ channel, setMute, setDeaf }) {
     const connection = joinVoiceChannel({
       channelId: channel.id,
       guildId: channel.guild.id,
@@ -36,6 +33,7 @@ class ClientMusicManager extends EventEmmiter {
 
     this._data.set(channel.guild.id, new GuildMusicManager({
       client: this.client,
+      manager: this,
       channel: channel
     }));
 
@@ -46,15 +44,17 @@ class ClientMusicManager extends EventEmmiter {
     connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
       // 如果
       try {
-        // 在五秒內重新連線的話，表示是從一語音頻道移動至另一個，便不做事
+        // 在一秒內重新連線的話，表示是從一語音頻道移動至另一個，便不做事
         await Promise.race([
           entersState(connection, VoiceConnectionStatus.Signalling, 1e3),
           entersState(connection, VoiceConnectionStatus.Connecting, 1e3)
         ]);
 
         dj.channel = dj.voiceState.channel;
+        dj.channelId = dj.channel.id;
       } catch (e) {
-        this._data.delete(message.guild.id);
+        console.log(e);
+        this._data.delete(channel.guild.id);
         connection.destroy();
       }
     });

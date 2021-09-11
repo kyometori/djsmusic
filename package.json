@@ -1,0 +1,15 @@
+{
+  "name": "discord-voice",
+  "version": "0.0.1",
+  "description": "A simple wrapper of @discordjs/voice library. This can help you use the new library easiler.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": "discord.js voice discord music bot",
+  "author": "kyometori",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/voice": "^0.6.0"
+  }
+}

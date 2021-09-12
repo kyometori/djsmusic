@@ -1,11 +1,11 @@
 # @kyometori/djsmusic
 ## Warning
-This package is still under heavy developement, so there might be some breaking changes.   
+This package is still under heavy developement, so there might be some breaking changes.
 We'll try to make breaking changes as less as we can, but if there's any, we're sorry about that.
 ## Introduction
-This is a simple wrapper of @discordjs/voice library. You can use this package to build a music bot with your discord.js client easily.   
-**We are not discord.js developers!**   
-**This package is not related to discord.js official!**   
+This is a simple wrapper of @discordjs/voice library. You can use this package to build a music bot with your discord.js client easily.
+**We are not discord.js developers!**
+**This package is not related to discord.js official!**
 **If you have any questions about this package, please don't ask in their supports**
 ```js
 const { Client } = require('discord.js');
@@ -93,6 +93,7 @@ new GuildMusicManager ({
 - `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` exception. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
 - `next()` : Get and remove the first song of the queue. Behave same as `GuildMusicManager#queue.shift()`.
 - `hasNext()` : Does this manager has next song. Behave same as `GuildMusicManager#queue.length`.
+- `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is too large it'll throw a `INVALID_SEEK_TIME` Error.
 - `pause()` : pause what's playing
 - `resume()` : unpause what's playing
 - `skip()` : skip what's playing

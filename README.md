@@ -141,10 +141,11 @@ Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/exa
 
 ### Sample usages
 These examples assume:
-- &lt;Client&gt; : Your bot's client
-- &lt;Channel&gt; : the target channel
-- &lt;Id&gt; : the target guild id
-- &lt;Url&gt; : the links
+- `<Client>` : Your bot's client
+- `<Channel>` : the target channel
+- `<Id>` : the target guild id
+- `<Url>` : the links
+- `<User>` : the one pick this song
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
@@ -162,7 +163,7 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
 #### Play
 ```js
-<Client>.music.get(<Id>).play(<Url>);
+<Client>.music.get(<Id>).play(<Url>, { player: <User> });
 ```
 
 #### Pause and Resume

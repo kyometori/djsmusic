@@ -93,7 +93,7 @@ new GuildMusicManager ({
 - `leave()` : leave the voice channel and kill this manager
 
 ### events
-- `play` : emit  after
+- `play` : emit  after a track started playing
   - Params: `Track track` the track is played
 - `leave` : emit after client left this guild
   - Params: `Guild guild` the guild of this manager

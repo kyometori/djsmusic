@@ -44,8 +44,8 @@ Build a music manager on `client[property]`. If no property supports it'll autom
 #### constructor
 ```js
 new ClientMusicManager (Client client, {
-    defaultMaxQueueSize // the default maximium size of queue, will be automatically apllied to all its `GuildMusicManager`
-    disableAutoplay     // if set to `true`, it won't automatically play the next song in queue
+    defaultMaxQueueSize, // the default maximium size of queue, will be automatically apllied to all its `GuildMusicManager`
+    disableAutoplay      // if set to `true`, it won't automatically play the next song in queue
 })
 ```
 
@@ -151,7 +151,7 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
 #### Join
 ```js
-<Client>.music.join(<Channel>);
+<Client>.music.join({ channel: <Channel> });
 ```
 
 #### Leave

@@ -1,5 +1,2 @@
-.DS_Store
-node_modules
-example
+example/*.*
 config.json
-.git

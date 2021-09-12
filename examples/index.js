@@ -30,7 +30,12 @@ client.on('messageCreate', message => {
       // Get the GuildMusicManager
       .get(message.guild.id)
       // play the resouce, remember to specify player
-      .play(message.content.slice(6), {player: message.member})
+      .play(message.content.slice(6), {
+        player: message.member,
+        details: {
+          note: 'Playing by using @kyometori/djsmusic!'
+        }
+      })
       // this return a promise
       // track is the track
       // queued is a Boolean, means if this track queued or play directly
@@ -44,6 +49,13 @@ client.on('messageCreate', message => {
           message.channel.send('Next');
         });
     });
+  }
+
+  // Command seek
+  if (message.content.startsWith('!seek')) {
+    // Just use seek function!
+    // We make it so simple
+    client.music.get(message.guild.id).seek(+message.content.slice(6));
   }
 
   // Command pause

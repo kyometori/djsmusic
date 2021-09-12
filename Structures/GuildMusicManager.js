@@ -63,7 +63,7 @@ class GuildMusicManager extends EventEmitter {
 
       const audioUrl = audioFilter(info.formats);
       track = new Track(audioUrl, this, {
-        title: info.videoDetails.title.replace(/[!@#$%^&*()_\/\-+=\[\]?<>\\\|]/g, input => `\\${input}`),
+        title: customMetadata.title ?? info.videoDetails.title.replace(/[!@#$%^&*()_\/\-+=\[\]?<>\\\|]/g, input => `\\${input}`),
         lengthSecond: info.videoDetails.lengthSeconds,
         player: customMetadata.player,
         details: {
@@ -100,6 +100,10 @@ class GuildMusicManager extends EventEmitter {
     return this.queue.shift();
   }
 
+  seek(time) {
+    this.player.play(this.nowPlaying.getStream(time));
+  }
+
   pause() {
     console.log(this.player.state.status)
     if (this.player.state.status === AudioPlayerStatus.Paused) throw new Error('ALREADY_PAUSED');
@@ -121,6 +125,7 @@ class GuildMusicManager extends EventEmitter {
     getVoiceConnection(this.guild.id).destroy();
     this.manager._data.delete(this.guild.id);
     this.emit('leave', this.guild);
+    this.manager.emit('leave', this.guild);
   }
 
   playTrack(track) {

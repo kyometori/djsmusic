@@ -74,7 +74,6 @@ class ClientMusicManager extends EventEmitter {
 
   leave(id) {
     this._data.get(id).leave();
-    this.emit('leave', id);
   }
 }
 

@@ -9,7 +9,7 @@ This is a simple wrapper of @discordjs/voice library. You can use this package t
 **If you have any questions about this package, please don't ask in their supports**
 ```js
 const { Client } = require('discord.js');
-const { createMusicManager } = require('discordjs-voice');
+const { createMusicManager } = require('@kyometori/djsmusic');
 const client = new Client({ intents: ['GUIDLS', 'GUILD_VOICE_STATES'] });
 
 client.once('ready' () => {
@@ -21,7 +21,9 @@ client.on('interactionCreate', interaction => {
   if (!interaction.isCommand()) return;
 
   if (interaction.commandName === 'join') {
-    interaction.client.music.join(interaction.guild.id);
+    interaction.client.music.join({
+      channel: interaction.member.voice.channel
+    });
   }
 
   if (interaction.commandName === 'play') {
@@ -44,8 +46,8 @@ Build a music manager on `client[property]`. If no property supports it'll autom
 #### constructor
 ```js
 new ClientMusicManager (Client client, {
-    defaultMaxQueueSize // the default maximium size of queue, will be automatically apllied to all its `GuildMusicManager`
-    disableAutoplay     // if set to `true`, it won't automatically play the next song in queue
+    defaultMaxQueueSize, // the default maximum size of queue, will be automatically apllied to all its `GuildMusicManager`
+    disableAutoplay      // if set to `true`, it won't automatically play the next song of the queue
 })
 ```
 
@@ -53,16 +55,16 @@ new ClientMusicManager (Client client, {
 - `client` : the client that instantiated this
 
 #### methods
-- `has (Snowflake id)` : if we have connection of the guild of given id in our data
-- `get (Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
-- `join ({ VoiceChannel channel, Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given.
-- `leave (Snowflake id)` : leave the guild of given id.
+- `has(Snowflake id)` : if we have connection of the guild of given id in our data
+- `get(Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
+- `join({ VoiceChannel channel, Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given.
+- `leave(Snowflake id)` : leave the guild of given id.
 
 #### events
 - `join` : Emit after your client joined a channel.
   - Params: `Guild guild` the joined guild
 - `leave` : Emit after your client left a channel.
-  - Params: `Snowflake guildId` the id of left guild.
+  - Params: `Guild guild` the left guild
 
 ### GuildMusicManager
 #### constructor
@@ -88,7 +90,7 @@ new GuildMusicManager ({
 - `nowPlaying` : empty object if nothing is playing, or a `Track` object when there's something
 
 #### methods
-- `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` exception. customMetadata can be access through Track#details. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
+- `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` exception. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
 - `next()` : Get and remove the first song of the queue. Behave same as `GuildMusicManager#queue.shift()`.
 - `hasNext()` : Does this manager has next song. Behave same as `GuildMusicManager#queue.length`.
 - `pause()` : pause what's playing
@@ -117,7 +119,7 @@ new Track({
     }
 });
 ```
-When track is constuct automatically by given Youtube URL in `GuildMusicManager`, its `detail` property includes:
+When track is constuct automatically by given Youtube URL in `GuildMusicManager`, its `detail` property will includes:
 - `thumbnailUrl` : the thumbnail url of this song
 - `channelName` : the name of channel
 - `channelUrl` : the url of channel
@@ -151,7 +153,7 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
 ### Join
 ```js
-<Client>.music.join(<Channel>);
+<Client>.music.join({ channel: <Channel> });
 ```
 
 ### Leave
@@ -170,6 +172,13 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 ```js
 <Client>.music.get(<Id>).pause();
 <Client>.music.get(<Id>).resume();
+```
+
+### Get NowPlaying Data
+```js
+// If anything is playing, this will be a Track object
+// Otherwise it's an empty Object
+<Client>.music.get(<Id>).nowPlaying
 ```
 
 For more examples you can look at our [example bot](https://github.com/kyometori/djsmusic/tree/main/examples) or look up our Documentation and create features yourself!

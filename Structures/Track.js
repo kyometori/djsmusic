@@ -3,18 +3,14 @@ const { createAudioResource, StreamType } = require('@discordjs/voice');
 const prism = require('prism-media');
 
 class Track extends EventEmitter {
-  constructor(audioUrl, metadata = {
-    title: 'unknown',
-    lengthSecond: Infinity,
-    player: 'unknown',
-    details: {}
-  }) {
+  constructor(audioUrl, manager, metadata) {
     super();
     this.audioUrl = audioUrl;
-    this.title = metadata.title;
-    this.lengthSecond = metadata.lengthSecond;
+    this.manager = manager;
+    this.title = metadata.title ?? 'unknown';
+    this.lengthSecond = metadata.lengthSecond ?? Infinity;
     this.player = metadata.player;
-    this.details = metadata.details;
+    this.details = metadata.details ?? details;
   }
 
   getStream(seektime = 0) {

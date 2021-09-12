@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const ytdl = require('ytdl-core');
 const Track = require('./Track.js')
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice');
 
@@ -28,35 +29,70 @@ class GuildMusicManager extends EventEmitter {
     });
   }
 
-  play(url, customMetadata, force = false) {
+  async play(url, customMetadata = {}, force = false) {
     if (!url) throw new Error('MISSING_URL');
+    if (!customMetadata.player) throw new Error('UNKNOWN_PLAYER');
     if (this.queue.length >= this.MAX_QUEUE_SIZE) throw new Error('QUEUE_OVERSIZE');
+    let queued = true;
     let success = false;
 
     function filter(url) {
       return ['.mp3', '.mp4', 'wav', 'ogg', 'aac'].some(ext => url.endsWith(ext));
     }
 
+    // Raw files
     let track;
     if (filter(url)) {
-      track = new Track(url, customMetadata);
+      track = new Track(url, this, customMetadata);
       success = true;
     }
 
+    // Youtube links
     const YT_VIDEO = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
 
     if (YT_VIDEO.test(url)) {
+      const info = await ytdl.getInfo(url);
+      if (!info) throw new Error('INVALID_YOUTUBE_URL');
+      if (!info.videoDetails.isCrawlable) throw new Error('UNPLAYABLE_YOUTUBE_URL');
+
+      function audioFilter(formats) {
+        for (const ele of formats)
+          if (ele.codecs === 'opus' && ele.container === 'webm' && ele.audioSampleRate === '48000')
+              return ele.url;
+      }
+
+      const audioUrl = audioFilter(info.formats);
+      track = new Track(audioUrl, this, {
+        title: info.videoDetails.title.replace(/[!@#$%^&*()_\/\-+=\[\]?<>\\\|]/g, input => `\\${input}`),
+        lengthSecond: info.videoDetails.lengthSeconds,
+        player: customMetadata.player,
+        details: {
+          thumbnailUrl: info.videoDetails.thumbnails.pop().url,
+          channelName: info.videoDetails.ownerChannelName,
+          channelUrl: info.videoDetails.ownerProfileUrl,
+          uploadDate: info.videoDetails.uploadDate,
+          viewCount: info.videoDetails.viewCount,
+          ytUrl: url
+          ...customMetadata.details
+        }
+      });
+
       success = true;
     }
 
     if (!success) throw new Error('UNSUPPORTED_URL_TYPE');
+
     this.queue.push(track);
+    if (force || !this.isPlaying) {
+      this.playTrack(this.queue.shift());
+      queued = false;
+    }
 
-    if (force || !this.isPlaying) this.playTrack(this.queue.shift());
+    return new Promise(resolve => resolve([track, queued]));
+  }
 
-    return new Promise(resolve => {
-      resolve(track)
-    });
+  hasNext() {
+    return !!this.queue.length;
   }
 
   next() {

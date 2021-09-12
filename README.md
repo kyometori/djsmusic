@@ -141,10 +141,10 @@ Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/exa
 
 ### Sample usages
 These examples assume:
-- <Client> : Your bot's client
-- <Channel> : the target channel
-- <Id> : the target guild id
-- <Url> : the links
+- &lt;Client&gt; : Your bot's client
+- &lt;Channel&gt; : the target channel
+- &lt;Id&gt; : the target guild id
+- &lt;Url&gt; : the links
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 

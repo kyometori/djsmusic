@@ -5,12 +5,14 @@ const { joinVoiceChannel,
         VoiceConnectionStatus } = require('@discordjs/voice');
 
 class ClientMusicManager extends EventEmitter {
-  constructor(client) {
+  constructor(client, options = {}) {
     if (!client) throw new Error('MISSING_CLIENT');
     super();
     this.client = client;
 
     this._data = new Map();
+    this.defaultMaxQueueSize = options.defaultMaxQueueSize ?? 99;
+    this.disableAutoplay = options.disableAutoplay ?? false;
   }
 
   has(id) {
@@ -22,7 +24,12 @@ class ClientMusicManager extends EventEmitter {
     return undefined;
   }
 
-  join({ channel, setMute, setDeaf }) {
+  join({ channel, setMute, setDeaf, maxQueueSize }) {
+    if (!channel.type === 'GUILD_VOICE' || !channel.type === 'GUILD_STAGE_VOICE')
+      throw new Error('INVALID_CHANNEL_TYPE');
+
+    if (!channel.joinable) throw new Error('MISSING_PERMISSIONS');
+
     const connection = joinVoiceChannel({
       channelId: channel.id,
       guildId: channel.guild.id,
@@ -34,8 +41,11 @@ class ClientMusicManager extends EventEmitter {
     this._data.set(channel.guild.id, new GuildMusicManager({
       client: this.client,
       manager: this,
-      channel: channel
+      channel: channel,
+      maxQueueSize: maxQueueSize ?? this.maxQueueSize
     }));
+
+    this.emit('join', channel.guild);
 
     // 讓 connection 綁定 player
     const dj = this._data.get(channel.guild.id);
@@ -53,15 +63,18 @@ class ClientMusicManager extends EventEmitter {
         dj.channel = dj.voiceState.channel;
         dj.channelId = dj.channel.id;
       } catch (e) {
-        console.log(e);
         this._data.delete(channel.guild.id);
         connection.destroy();
+        this.emit('leave', channel.guild.id);
       }
     });
+
+    return dj;
   }
 
   leave(id) {
     this._data.get(id).leave();
+    this.emit('leave', id);
   }
 }
 

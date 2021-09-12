@@ -1,16 +1,30 @@
 {
-  "name": "discordjs-voice",
-  "version": "0.0.1",
-  "description": "A simple wrapper of @discordjs/voice library. This can help you use the new library easiler.",
+  "name": "@kyometori/djsmusic",
+  "version": "0.1.0",
+  "description": "A simple wrapper of @discordjs/voice library. This can help you make music bot easier",
   "main": "index.js",
   "scripts": {
     "test": "node examples/index.js"
   },
-  "keywords": "discord.js voice discord music bot",
+  "keywords": [
+    "discord",
+    "discord.js",
+    "voice",
+    "music",
+    "bot"
+  ],
   "author": "kyometori",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyometori/djsmusic.git"
+  },
   "dependencies": {
-    "@discordjs/voice": "^0.6.0"
+    "@discordjs/opus": "^0.5.3",
+    "@discordjs/voice": "^0.6.0",
+    "ffmpeg-static": "^4.4.0",
+    "libsodium-wrappers": "^0.7.9",
+    "prism-media": "^1.3.2"
   },
   "devDependencies": {
     "discord.js": "^13.1.0"

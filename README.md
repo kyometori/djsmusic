@@ -44,8 +44,8 @@ Build a music manager on `client[property]`. If no property supports it'll autom
 #### constructor
 ```js
 new ClientMusicManager (Client client, {
-    defaultMaxQueueSize, // the default maximium size of queue, will be automatically apllied to all its `GuildMusicManager`
-    disableAutoplay      // if set to `true`, it won't automatically play the next song in queue
+    defaultMaxQueueSize // the default maximium size of queue, will be automatically apllied to all its `GuildMusicManager`
+    disableAutoplay     // if set to `true`, it won't automatically play the next song in queue
 })
 ```
 
@@ -136,10 +136,10 @@ When track is constuct automatically by given Youtube URL in `GuildMusicManager`
 #### events
 - `end` : emits after this track finish playing
 
-### Examples
+## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).
 
-### Sample usages
+## Sample usages
 These examples assume:
 - `<Client>` : Your bot's client
 - `<Channel>` : the target channel
@@ -149,24 +149,24 @@ These examples assume:
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
-#### Join
+### Join
 ```js
-<Client>.music.join({ channel: <Channel> });
+<Client>.music.join(<Channel>);
 ```
 
-#### Leave
+### Leave
 ```js
 <Client>.music.leave(<Id>);
 // or :
 <Client>.music.get(<id>).leave();
 ```
 
-#### Play
+### Play
 ```js
 <Client>.music.get(<Id>).play(<Url>, { player: <User> });
 ```
 
-#### Pause and Resume
+### Pause and Resume
 ```js
 <Client>.music.get(<Id>).pause();
 <Client>.music.get(<Id>).resume();

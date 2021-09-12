@@ -72,7 +72,7 @@ class GuildMusicManager extends EventEmitter {
           channelUrl: info.videoDetails.ownerProfileUrl,
           uploadDate: info.videoDetails.uploadDate,
           viewCount: info.videoDetails.viewCount,
-          ytUrl: url
+          ytUrl: url,
           ...customMetadata.details
         }
       });

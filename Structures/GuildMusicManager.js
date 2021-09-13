@@ -19,7 +19,8 @@ class GuildMusicManager extends EventEmitter {
 
     this.player.on(AudioPlayerStatus.Idle, () => {
       this.nowPlaying.emit('end');
-      if (!this.manager.disableAutoplay && this.queue.length) {
+      this.emit('end', this.nowPlaying);
+      if (!this.manager.disableAutoplay && (this.queue.length || this.nowPlaying.isLooping)) {
         return this.playTrack(this.next())
       }
 
@@ -37,7 +38,7 @@ class GuildMusicManager extends EventEmitter {
     let success = false;
 
     function filter(url) {
-      return ['.mp3', '.mp4', 'wav', 'ogg', 'aac'].some(ext => url.endsWith(ext));
+      return ['.mp3', '.mp4', '.wav', '.ogg', '.aac'].some(ext => url.endsWith(ext));
     }
 
     // Raw files
@@ -64,7 +65,7 @@ class GuildMusicManager extends EventEmitter {
       const audioUrl = audioFilter(info.formats);
       track = new Track(audioUrl, this, {
         title: customMetadata.title ?? info.videoDetails.title.replace(/[!@#$%^&*()_\/\-+=\[\]?<>\\\|]/g, input => `\\${input}`),
-        lengthSecond: info.videoDetails.lengthSeconds,
+        lengthSeconds: info.videoDetails.lengthSeconds,
         player: customMetadata.player,
         details: {
           thumbnailUrl: info.videoDetails.thumbnails.pop().url,
@@ -88,16 +89,21 @@ class GuildMusicManager extends EventEmitter {
       queued = false;
     }
 
-    return new Promise(resolve => resolve([track, queued]));
+    return [track, queued];
   }
 
   hasNext() {
-    return !!this.queue.length;
+    return this.nowPlaying.isLooping || !!this.queue.length;
   }
 
   next() {
+    if (this.nowPlaying.isLooping) return this.nowPlaying;
     if (!this.queue.length) return undefined;
     return this.queue.shift();
+  }
+
+  setLoop(loop) {
+    this.nowPlaying.isLooping = loop;
   }
 
   seek(time) {
@@ -105,7 +111,6 @@ class GuildMusicManager extends EventEmitter {
   }
 
   pause() {
-    console.log(this.player.state.status)
     if (this.player.state.status === AudioPlayerStatus.Paused) throw new Error('ALREADY_PAUSED');
     this.player.pause();
   }

@@ -17,9 +17,16 @@ client.on('messageCreate', message => {
   // Command join
   if (message.content === '!join') {
     // join the channel
-    client.music.join({
-      channel: message.member.voice.channel
-    });
+    client.music
+      .join({ channel: message.member.voice.channel })
+      .then(manager => {
+
+        // when a song is finished, send the text
+        manager.on('end', () => {
+          if (manager.hasNext()) message.channel.send('Next!');
+          else message.channel.send('Finished!');
+        })
+      });
 
     message.reply('Joined ' + message.member.voice.channel.name);
   }
@@ -43,11 +50,6 @@ client.on('messageCreate', message => {
         // if its queued or not
         if (queued) message.reply('Queued the song!');
         else message.reply('Playing now!');
-        // when the track end
-        track.once('end', function () {
-          if (!this.manager.hasNext()) return message.channel.send('Finish')
-          message.channel.send('Next');
-        });
     });
   }
 
@@ -74,6 +76,14 @@ client.on('messageCreate', message => {
   if (message.content === '!skip') {
     // skip it
     client.music.get(message.guild.id).skip();
+  }
+
+  // Command loop
+  if (message.content === '!loop') {
+    // toggle loop
+    const manager = client.music.get(message.guild.id);
+    manager.setLoop(!manager.nowPlaying.isLooping);
+    message.reply('Toggle loop!');
   }
 
   // Command leave

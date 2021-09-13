@@ -8,14 +8,16 @@ class Track extends EventEmitter {
     this.audioUrl = audioUrl;
     this.manager = manager;
     this.title = metadata.title ?? 'unknown';
-    this.lengthSecond = metadata.lengthSecond ?? Infinity;
+    this.lengthSeconds = metadata.lengthSeconds ?? Infinity;
     this.player = metadata.player;
     this.details = metadata.details ?? details;
+
+    this.isLooping = false;
   }
 
   getStream(seektime = 0) {
     if (isNaN(+seektime)) throw new Error('TYPE_ERROR');
-    if (seektime > this.lengthSecond * 1000) throw new Error('INVALID_SEEK_TIME');
+    if (seektime > this.lengthSeconds * 1000) throw new Error('INVALID_SEEK_TIME');
     // ffmpeg 的參數
     const FFMPEG_OPUS_ARGUMENTS = ['-i', this.audioUrl, '-ss', ~~(seektime)/1000, '-analyzeduration', '0', '-loglevel', '0', '-acodec', 'libopus', '-f', 'opus', '-ar', '48000', '-ac', '2', ];
     // 使用 prism-media 把參數綁上音樂傳給 stream

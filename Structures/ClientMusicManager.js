@@ -69,7 +69,7 @@ class ClientMusicManager extends EventEmitter {
       }
     });
 
-    return dj;
+    return new Promise(resolve => resolve(dj));
   }
 
   leave(id) {

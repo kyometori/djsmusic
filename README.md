@@ -3,10 +3,11 @@
 This package is still under heavy developement, so there might be some breaking changes.
 We'll try to make breaking changes as less as we can, but if there's any, we're sorry about that.
 ## Introduction
-This is a simple wrapper of @discordjs/voice library. You can use this package to build a music bot with your discord.js client easily.
-**We are not discord.js developers!**
-**This package is not related to discord.js official!**
-**If you have any questions about this package, please don't ask in their supports**
+This is a simple wrapper of @discordjs/voice library.   
+You can use this package to build a music bot with your discord.js client easily.   
+**We are not discord.js developers!**   
+**This package is not related to discord.js official!**   
+**If you have any questions about this package, please don't ask in their supports**   
 ```js
 const { Client } = require('discord.js');
 const { createMusicManager } = require('@kyometori/djsmusic');
@@ -46,7 +47,7 @@ Build a music manager on `client[property]`. If no property supports it'll autom
 #### constructor
 ```js
 new ClientMusicManager (Client client, {
-    defaultMaxQueueSize, // the default maximum size of queue, will be automatically apllied to all its `GuildMusicManager`
+    defaultMaxQueueSize, // the default maximum size of queue, will be automatically applied to all its `GuildMusicManager`
     disableAutoplay      // if set to `true`, it won't automatically play the next song of the queue
 })
 ```
@@ -62,9 +63,9 @@ new ClientMusicManager (Client client, {
 
 #### events
 - `join` : Emit after your client joined a channel.
-  - Params: `Guild guild` the joined guild
+  - Params: `Guild guild` the guild of joined channel.
 - `leave` : Emit after your client left a channel.
-  - Params: `Guild guild` the left guild
+  - Params: `Guild guild` the guild of left channel.
 
 ### GuildMusicManager
 #### constructor
@@ -90,10 +91,10 @@ new GuildMusicManager ({
 - `nowPlaying` : empty object if nothing is playing, or a `Track` object when there's something
 
 #### methods
-- `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` exception. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
-- `next()` : Get and remove the first song of the queue. Behave same as `GuildMusicManager#queue.shift()`.
-- `hasNext()` : Does this manager has next song. Behave same as `GuildMusicManager#queue.length`.
-- `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is too large it'll throw a `INVALID_SEEK_TIME` Error.
+- `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` Error. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
+- `next()` : Get and remove the first song of the queue. If it's looping, it'll return what's playing now..
+- `hasNext()` : Does this manager has next song. If current track is looping it always returns true.
+- `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
 - `pause()` : pause what's playing
 - `resume()` : unpause what's playing
 - `skip()` : skip what's playing
@@ -113,14 +114,14 @@ new Track({
     audioUrl, // the audio resource url of this track
     manager,  // the GuildMusicManager playing this track
     metadata: {
-        title        // title of this track, default unknown
-        lengthSecond // length of this track, default Infinity
-        player       // the one choose play this song, required
-        details      // Other metadata of this track, default empty object
+        title         // title of this track, default unknown
+        lengthSeconds // length of this track, default Infinity
+        player        // the one choose play this song, required
+        details       // Other metadata of this track, default empty object
     }
 });
 ```
-When track is constuct automatically by given Youtube URL in `GuildMusicManager`, its `detail` property will includes:
+When track is construct automatically by given Youtube URL in `GuildMusicManager`, its `details` property will includes:
 - `thumbnailUrl` : the thumbnail url of this song
 - `channelName` : the name of channel
 - `channelUrl` : the url of channel
@@ -132,7 +133,7 @@ When track is constuct automatically by given Youtube URL in `GuildMusicManager`
 #### properties
 - `manager` : the manager that instantiated this.
 - `title` : the title of this track
-- `lengthSecond` : the length of this song, in seconds.
+- `lengthSeconds` : the length of this song, in seconds.
 - `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
 - `details` : the detail metadata of this track
 
@@ -142,13 +143,14 @@ When track is constuct automatically by given Youtube URL in `GuildMusicManager`
 ## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).
 
-## Sample usages
+## Example usages
 These examples assume:
 - `<Client>` : Your bot's client
 - `<Channel>` : the target channel
 - `<Id>` : the target guild id
 - `<Url>` : the links
 - `<User>` : the one pick this song
+- `<Time>` : a time in unit milliseconds
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
@@ -173,6 +175,17 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 ```js
 <Client>.music.get(<Id>).pause();
 <Client>.music.get(<Id>).resume();
+```
+
+### Toggle Looping
+```js
+const manager = <Client>.music.get(<id>);
+manager.setLoop(!manager.nowPlaying.isLooping);
+```
+
+### Seek a time
+```js
+<Client>.music.get(<Id>).seek(<Time>);
 ```
 
 ### Get NowPlaying Data

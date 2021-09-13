@@ -37,12 +37,36 @@ client.on('interactionCreate', interaction => {
 client.login('your-token-goes-here');
 ```
 
+## Table of Content
+* [Requirements](#requirements)
+* [Documentation](#documentation)
+  * [createMusicManager](#createmusicmanager)
+  * [ClientMusicManager](#clientmusicmanager)
+  * [GuildMusicManager](#guildmusicmanager)
+  * [Track](#track)
+* [Examples](#examples)
+* [Example usages](#example-usages)
+  * [Join](#join)
+  * [Leave](#leave)
+  * [Play](#play)
+  * [Pause and Resume](#pause-and-resume)
+  * [Toggle Looping](#toggle-looping)
+  * [Seek a time](#seek-a-time)
+  * [Get NowPlaying Data](#get-nowplaying-data)
+  * [Logging when song is finished](#logging-when-song-is-finished)
+* [Thanks](#thanks)
+
+## Requirements
+To use this package, you must meet these requirements:
+- node.js version > 14
+- discord.js version > 13
+
 ## Documentation
 ### createMusicManager
 ```js
 createMusicManager (Client client, Object options, String property)
 ```
-Build a music manager on `client[property]`. If no property supports it'll automatically use `music`. The `options` will be automatically applied to the Manager options.
+Build a music manager on `client[property]`. If no property supply, it'll automatically use `music`. The `options` will be automatically applied to the Manager options.
 
 ### ClientMusicManager
 #### constructor

@@ -53,19 +53,19 @@ new ClientMusicManager (Client client, {
 ```
 
 #### properties
-- `client` : the client that instantiated this
+* `client` : the client that instantiated this
 
 #### methods
-- `has(Snowflake id)` : if we have connection of the guild of given id in our data
-- `get(Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
-- `join({ VoiceChannel channel, Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given.
-- `leave(Snowflake id)` : leave the guild of given id.
+* `has(Snowflake id)` : if we have connection of the guild of given id in our data
+* `get(Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
+* `join({ VoiceChannel channel, Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given. Returns a `Promise<GuildMusicManager>` which is the manager of joined guild.
+* `leave(Snowflake id)` : leave the guild of given id.
 
 #### events
-- `join` : Emit after your client joined a channel.
-  - Params: `Guild guild` the guild of joined channel.
-- `leave` : Emit after your client left a channel.
-  - Params: `Guild guild` the guild of left channel.
+* `join` : Emit after your client joined a channel.
+  * Params: `Guild guild` the guild of joined channel.
+* `leave` : Emit after your client left a channel.
+  * Params: `Guild guild` the guild of left channel.
 
 ### GuildMusicManager
 #### constructor
@@ -79,33 +79,35 @@ new GuildMusicManager ({
 ```
 
 #### properties
-- `client` : the Client that instantiated this
-- `guild` : the guild of this manager
-- `channel` : the VoiceChannel that instantiated this
-- `manager` : the ClientMusicManager that instantiated this
-- `voiceState` : the voiceState of Client
-- `player` : the player of this manager
-- `queue` : the queue of this manager
-- `MAX_QUEUE_SIZE` : the max size of this manager's queue
-- `isPlaying` : is this manager's player playing
-- `nowPlaying` : empty object if nothing is playing, or a `Track` object when there's something
+* `client` : the Client that instantiated this
+* `guild` : the guild of this manager
+* `channel` : the VoiceChannel that instantiated this
+* `manager` : the ClientMusicManager that instantiated this
+* `voiceState` : the voiceState of Client
+* `player` : the player of this manager
+* `queue` : the queue of this manager
+* `MAX_QUEUE_SIZE` : the max size of this manager's queue
+* `isPlaying` : is this manager's player playing
+* `nowPlaying` : empty object if nothing is playing, or a `Track` object when there's something
 
 #### methods
-- `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` Error. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<Track, Boolean>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
-- `next()` : Get and remove the first song of the queue. If it's looping, it'll return what's playing now..
-- `hasNext()` : Does this manager has next song. If current track is looping it always returns true.
-- `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
-- `pause()` : pause what's playing
-- `resume()` : unpause what's playing
-- `skip()` : skip what's playing
-- `leave()` : leave the voice channel and kill this manager
+* `play(String url, Object customMetadata, Boolean force)` : The url of music you want to play. If the url is unsupported, it'll throw a `UNSUPPORTED_URL_TYPE` Error. `customMetadata` can be access through `Track` and `Track#details`. Force is to determine to skip what's playing now or queue this song if there are already something playing.  Returns a `Promise<[Track, Boolean]>`. The `Track` object is the song you just queue or play, and the `Boolean` is this song is queued or not (playing directly).
+* `next()` : Get and remove the first song of the queue. If it's looping, it'll return what's playing now.
+* `hasNext()` : Does this manager has next song. If current track is looping it always returns true.
+* `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
+* `pause()` : pause what's playing
+* `resume()` : unpause what's playing
+* `skip()` : skip what's playing
+* `leave()` : leave the voice channel and kill this manager
 
 #### events
-- `play` : emit  after a track started playing
-  - Params: `Track track` the track is played
-- `leave` : emit after client left this guild
-  - Params: `Guild guild` the guild of this manager
-- `finish` : emit after every song in queue finished playing
+* `play` : emit  after a track started playing
+  * Params: `Track track` the track is played
+* `leave` : emit after client left this guild
+  * Params: `Guild guild` the guild of this manager
+* `end` : emit when a song is finished playing (same as Track#end)
+  * Params: `Track track` the track just finished
+* `finish` : emit after every song in queue finished playing
 
 ### Track
 #### constructor
@@ -122,35 +124,35 @@ new Track({
 });
 ```
 When track is construct automatically by given Youtube URL in `GuildMusicManager`, its `details` property will includes:
-- `thumbnailUrl` : the thumbnail url of this song
-- `channelName` : the name of channel
-- `channelUrl` : the url of channel
-- `uploadDate` : the formatted upload date of this song
-- `viewCount` : the view count of this song in Youtube
-- `ytUrl` : the url of the song in Youtube
+* `thumbnailUrl` : the thumbnail url of this song
+* `channelName` : the name of channel
+* `channelUrl` : the url of channel
+* `uploadDate` : the formatted upload date of this song
+* `viewCount` : the view count of this song in Youtube
+* `ytUrl` : the url of the song in Youtube
 
 
 #### properties
-- `manager` : the manager that instantiated this.
-- `title` : the title of this track
-- `lengthSeconds` : the length of this song, in seconds.
-- `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
-- `details` : the detail metadata of this track
+* `manager` : the manager that instantiated this.
+* `title` : the title of this track
+* `lengthSeconds` : the length of this song, in seconds.
+* `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
+* `details` : the detail metadata of this track
 
 #### events
-- `end` : emits after this track finish playing
+* `end` : emits after this track finish playing
 
 ## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).
 
 ## Example usages
 These examples assume:
-- `<Client>` : Your bot's client
-- `<Channel>` : the target channel
-- `<Id>` : the target guild id
-- `<Url>` : the links
-- `<User>` : the one pick this song
-- `<Time>` : a time in unit milliseconds
+* `<Client>` : Your bot's client
+* `<Channel>` : the target channel
+* `<Id>` : the target guild id
+* `<Url>` : the links
+* `<User>` : the one pick this song
+* `<Time>` : a time in unit milliseconds
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
@@ -168,8 +170,21 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
 ### Play
 ```js
+// Normal playing
 <Client>.music.get(<Id>).play(<Url>, { player: <User> });
+
+// With promise
+<Client>.music
+    .get(<Id>)
+    .play(<Url>, { player: <User> })
+    .then(([track, queued]) => {
+        if (queued) console.log(`${track.title} is queued!`);
+        else console.log(`${track.title} is playing!`);
+    });
 ```
+The `url` parameter of the `play` method accept following urls:
+* Raw `mp3`, `mp4`, `wav`, `ogg`, `aac` files. The url must ended with `.(file extensions)`
+* A Youtube link.
 
 ### Pause and Resume
 ```js
@@ -193,6 +208,15 @@ manager.setLoop(!manager.nowPlaying.isLooping);
 // If anything is playing, this will be a Track object
 // Otherwise it's an empty Object
 <Client>.music.get(<Id>).nowPlaying
+```
+
+### Logging when song is finished
+```js
+const manager = <Client>.music.get(<Id>)
+manager.on('end', () => {
+   if (manager.hasNext()) console.log('Start playing next song...');
+   else console.log('Finish all queued songs!');
+});
 ```
 
 For more examples you can look at our [example bot](https://github.com/kyometori/djsmusic/tree/main/examples) or look up our Documentation and create features yourself!

@@ -42,7 +42,7 @@ client.login('your-token-goes-here');
 ```js
 createMusicManager (Client client, Object options, String property)
 ```
-Build a music manager on `client[property]`. If no property supports it'll automatically use music. The `options` will be automatically applied to the Manager options.
+Build a music manager on `client[property]`. If no property supports it'll automatically use `music`. The `options` will be automatically applied to the Manager options.
 
 ### ClientMusicManager
 #### constructor
@@ -55,7 +55,7 @@ new ClientMusicManager (Client client, {
 
 #### properties
 * `client` : the client that instantiated this
-* `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by there id.
+* `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by their id.
 
 #### methods
 * `has(Snowflake id)` : if we have connection of the guild of given id in our data

@@ -24,6 +24,10 @@ class ClientMusicManager extends EventEmitter {
     return undefined;
   }
 
+  get connections() {
+    return new Map(this._data);
+  }
+
   join({ channel, setMute, setDeaf, maxQueueSize }) {
     if (!channel.type === 'GUILD_VOICE' || !channel.type === 'GUILD_STAGE_VOICE')
       throw new Error('INVALID_CHANNEL_TYPE');

@@ -1,4 +1,5 @@
 # @kyometori/djsmusic
+[![npm version](https://img.shields.io/npm/v/@kyometori/djsmusic.svg?maxAge=3600)](https://www.npmjs.com/package/@kyometori/djsmusic) [![downloads](https://img.shields.io/npm/dt/@kyometori/djsmusic.svg?maxAge=3600)](https://www.npmjs.com/package/@kyometori/djsmusic)   [![downloads](https://img.shields.io/github/last-commit/kyometori/djsmusic)](https://github.com/kyometori/djsmusic) [![downloads](https://img.shields.io/github/languages/code-size/kyometori/djsmusic)](https://github.com/kyometori/djsmusic)
 ## Warning
 This package is still under heavy developement, so there might be some breaking changes.
 We'll try to make breaking changes as less as we can, but if there's any, we're sorry about that.
@@ -54,6 +55,7 @@ new ClientMusicManager (Client client, {
 
 #### properties
 * `client` : the client that instantiated this
+* `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by there id.
 
 #### methods
 * `has(Snowflake id)` : if we have connection of the guild of given id in our data

@@ -15,6 +15,10 @@ class Track extends EventEmitter {
     this.isLooping = false;
   }
 
+  get playedMs() {
+    return this.resource.playbackDuration;
+  }
+
   getStream(seektime = 0) {
     if (isNaN(+seektime)) throw new Error('TYPE_ERROR');
     if (seektime > this.lengthSeconds * 1000) throw new Error('INVALID_SEEK_TIME');

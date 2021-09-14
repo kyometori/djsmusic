@@ -29,7 +29,7 @@ class ClientMusicManager extends EventEmitter {
   }
 
   join({ channel, setMute, setDeaf, maxQueueSize }) {
-    if (!channel.type === 'GUILD_VOICE' || !channel.type === 'GUILD_STAGE_VOICE')
+    if (channel.type !== 'GUILD_VOICE' && channel.type !== 'GUILD_STAGE_VOICE')
       throw new Error('INVALID_CHANNEL_TYPE');
 
     if (!channel.joinable) throw new Error('MISSING_PERMISSIONS');

@@ -37,6 +37,8 @@ class GuildMusicManager extends EventEmitter {
     let queued = true;
     let success = false;
 
+    url = url.trim();
+
     function filter(url) {
       return ['.mp3', '.mp4', '.wav', '.ogg', '.aac'].some(ext => url.endsWith(ext));
     }

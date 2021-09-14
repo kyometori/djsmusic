@@ -4,7 +4,7 @@
   "description": "A simple wrapper of @discordjs/voice library. This can help you make music bot easier",
   "main": "index.js",
   "scripts": {
-    "test": "node examples/index.js"
+    "test": "node examples/example.bot.js"
   },
   "keywords": [
     "discord",
@@ -25,7 +25,8 @@
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "prism-media": "^1.3.2",
-    "ytdl-core": "^4.9.1"
+    "ytdl-core": "^4.9.1",
+    "ytsr": "^3.5.3"
   },
   "devDependencies": {
     "discord.js": "^13.1.0"

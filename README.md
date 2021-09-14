@@ -44,22 +44,26 @@ client.login('your-token-goes-here');
   * [ClientMusicManager](#clientmusicmanager)
   * [GuildMusicManager](#guildmusicmanager)
   * [Track](#track)
+  * [YoutubeUtils](#youtubeutils)
+  * [YoutubeVideoData](#youtubevideodata)
+  * [YoutubeChannelData](#youtubechanneldata)
+  * [YoutubePlaylistData](#youtubeplaylistdata)
 * [Examples](#examples)
 * [Example usages](#example-usages)
-  * [Join](#join)
-  * [Leave](#leave)
+  * [Join and Leave](#join-and-leave)
   * [Play](#play)
   * [Pause and Resume](#pause-and-resume)
   * [Toggle Looping](#toggle-looping)
   * [Seek a time](#seek-a-time)
   * [Get NowPlaying Data](#get-nowplaying-data)
   * [Logging when song is finished](#logging-when-song-is-finished)
+  * [Search and play the most related song by keywords](#search-and-play-the-most-related-song-by-keywords)
 * [Thanks](#thanks)
 
 ## Requirements
 To use this package, you must meet these requirements:
-- node.js version > 14
-- discord.js version > 13
+* node.js version > 14
+* discord.js version > 13
 
 ## Documentation
 ### createMusicManager
@@ -67,6 +71,8 @@ To use this package, you must meet these requirements:
 createMusicManager (Client client, Object options, String property)
 ```
 Build a music manager on `client[property]`. If no property supply, it'll automatically use `music`. The `options` will be automatically applied to the Manager options.
+
+This is the most important object in this package. For most usage you only need to import this (and some utils below) for your bot.
 
 ### ClientMusicManager
 #### constructor
@@ -164,9 +170,66 @@ When track is construct automatically by given Youtube URL in `GuildMusicManager
 * `lengthSeconds` : the length of this song, in seconds.
 * `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
 * `details` : the detail metadata of this track
+* `playMs` : (readonly) how many milliseconds the track played
 
 #### events
 * `end` : emits after this track finish playing
+
+### YoutubeUtils
+#### methods
+* `searchFirstVideo(String keywords)` : (static) Use the keywords to search, and return the first (most related) video. Returns a `YoutubeVideoData` Object.
+* `search(String keywords, Number max { Boolean disableChannel, Boolean disablePlaylist, Boolean disableVideo })` : (static) Use the keywords to search, and return at most `max` results. You can use `disableSomething` to pull the type you don't want from results. In default only video is enable. Returns an Array of `YoutubeObjectData`, which is one of `YoutubeVideoData`, `YoutubeChannelData`, `YoutubePlaylistData`.
+
+### YoutubeVideoData
+#### constructor
+```js
+new YoutubeVideoData(rawData); // raw data from ytsr
+// you can construct this by passing your own data, but you need `type: 'video'` guard in the data or will cause an Error.
+```
+
+#### properties
+* `type` : always `'video'`
+* `title` : title of this video
+* `url` : youtube url of this video
+* `thumbnailUrl` : url of this video's thumbnail
+* `duration` : length of this video, formatted in `mm:ss`
+* `channel` : channel uploaded this video. This is a `YoutubeChannelData` Object.
+
+#### methods
+* `play(GuildMusicManager manager, Object customMetadata, Boolean force)` : Play this video. This behave same as `GuildMusicManager#play`. Returns same thing with `GuildMusicManager#play`.
+
+### YoutubeChannelData
+#### constructor
+```js
+new YoutubeChannelData(rawData); // raw data from ytsr
+// you can construct this by passing your own data, but you need `type: 'channel'` guard in the data or will cause an Error.
+```
+
+#### properties
+* `type` : always `'channel'`
+* `name` : name of this channel
+* `channelId` : id of this channel
+* `url` : url to this channel
+* `descriptionShort` : short description of this channel, if any. Notice that if this is from `YoutubeVideoData#channel` or `YoutubePlaylistData#channel`, you have to fetch to get this.
+* `avatarUrl` : url to avatar of this channel. Notice that if this is from `YoutubePlaylistData#channel`, you have to fetch to get this.
+* `verified` : whether this channel is verified or not
+
+#### methods
+* `fetch()` : Fetch this channel to get missing properties. Return `Promise<YoutubeChannelData>`. Notice this use `name` and `channelId` to get data. An error will occurred when one missing. Also it will refresh all data of this object if the fetched data is different from your original data (most happened in construct this object manually).
+
+### YoutubePlaylistData
+#### constructor
+```js
+new YoutubePlaylistData(rawData); // raw data from ytsr
+// you can construct this by passing your own data, but you need `type: 'playlist'` guard in the data or will cause an Error.
+```
+
+#### properties
+* `type` : always `playlist`.
+* `title` : the title of this playlist.
+* `url` : url of this playlist.
+* `firstVideoThumbnailUrl` : thumbnail of this playlist's first video
+* `channel` : channel created this playlist. This is a `YoutubeChannelData` Object.
 
 ## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).
@@ -179,18 +242,19 @@ These examples assume:
 * `<Url>` : the links
 * `<User>` : the one pick this song
 * `<Time>` : a time in unit milliseconds
+* `<Keywords>` : Search keywords
 
 Also we assume your `ClientMusicManager` is on `<Client>.music`.
 
-### Join
+### Join and Leave
 ```js
+// join
 <Client>.music.join({ channel: <Channel> });
-```
 
-### Leave
-```js
+// leave #1
 <Client>.music.leave(<Id>);
-// or :
+
+// leave #2
 <Client>.music.get(<id>).leave();
 ```
 
@@ -238,14 +302,37 @@ manager.setLoop(!manager.nowPlaying.isLooping);
 
 ### Logging when song is finished
 ```js
-const manager = <Client>.music.get(<Id>)
+const manager = <Client>.music.get(<Id>);
 manager.on('end', () => {
    if (manager.hasNext()) console.log('Start playing next song...');
    else console.log('Finish all queued songs!');
 });
 ```
 
-For more examples you can look at our [example bot](https://github.com/kyometori/djsmusic/tree/main/examples) or look up our Documentation and create features yourself!
+### Leave when queue is finished
+```js
+<Client>.music
+  .join({ channel: <Channel> })
+  .then(manager => {
+    manager.once('finish', () => {
+      manager.leave();
+    });
+  });
+```
+This code implements both join and set up leave-when-finished.
+
+### Search and play the most related song by keywords
+```js
+YoutubeUtils.searchFirstVideo(<Keywords>)
+  .then(data => {
+    data.play(<Client>.music.get(<Id>), { player: <User>});
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+
+For more examples you can look at our [examples](https://github.com/kyometori/djsmusic/tree/main/examples) or look up our Documentation and create features yourself!
 
 ## Thanks
 [Junior HiZollo](https://hizollo.ddns.net) : My another project which is a Discord bot with music feature. This library is basically rewriting its music (which was also wrtten by me) and make it generic.

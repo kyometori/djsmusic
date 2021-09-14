@@ -3,7 +3,7 @@
  */
 const { Client } = require('discord.js');
 const { token } = require('./config.json');
-const { createMusicManager } = require('../');
+const { createMusicManager, YoutubeUtils } = require('../');
 const client = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_VOICE_STATES'] });
 
 client.once('ready', () => {
@@ -50,7 +50,7 @@ client.on('messageCreate', message => {
         // if its queued or not
         if (queued) message.reply('Queued the song!');
         else message.reply('Playing now!');
-    });
+      });
   }
 
   // Command seek

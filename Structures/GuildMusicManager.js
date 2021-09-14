@@ -33,7 +33,7 @@ class GuildMusicManager extends EventEmitter {
   async play(url, customMetadata = {}, force = false) {
     if (!url) throw new Error('MISSING_URL');
     if (!customMetadata.player) throw new Error('UNKNOWN_PLAYER');
-    if (this.queue.length >= this.MAX_QUEUE_SIZE) throw new Error('QUEUE_OVERSIZE');
+    if (this.queue.length >= this.MAX_QUEUE_SIZE) throw new Error('EXCEED_QUEUE_MAXSIZE');
     let queued = true;
     let success = false;
 

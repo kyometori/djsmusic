@@ -12,7 +12,7 @@ You can use this package to build a music bot with your discord.js client easily
 ```js
 const { Client } = require('discord.js');
 const { createMusicManager } = require('@kyometori/djsmusic');
-const client = new Client({ intents: ['GUIDLS', 'GUILD_VOICE_STATES'] });
+const client = new Client({ intents: ['GUILDS', 'GUILD_VOICE_STATES'] });
 
 client.once('ready' () => {
   createMusicManager(client);

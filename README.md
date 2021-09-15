@@ -38,32 +38,38 @@ client.login('your-token-goes-here');
 ```
 
 ## Table of Content
-* [Requirements](#requirements)
-* [Documentation](#documentation)
-  * [createMusicManager](#createmusicmanager)
-  * [ClientMusicManager](#clientmusicmanager)
-  * [GuildMusicManager](#guildmusicmanager)
-  * [Track](#track)
-  * [YoutubeUtils](#youtubeutils)
-  * [YoutubeVideoData](#youtubevideodata)
-  * [YoutubeChannelData](#youtubechanneldata)
-  * [YoutubePlaylistData](#youtubeplaylistdata)
-* [Examples](#examples)
-* [Example usages](#example-usages)
-  * [Join and Leave](#join-and-leave)
-  * [Play](#play)
-  * [Pause and Resume](#pause-and-resume)
-  * [Toggle Looping](#toggle-looping)
-  * [Seek a time](#seek-a-time)
-  * [Get NowPlaying Data](#get-nowplaying-data)
-  * [Logging when song is finished](#logging-when-song-is-finished)
-  * [Search and play the most related song by keywords](#search-and-play-the-most-related-song-by-keywords)
-* [Thanks](#thanks)
+- [Requirements](#requirements)
+- [Documentation](#documentation)
+  - [createMusicManager](#createmusicmanager)
+  - [ClientMusicManager](#clientmusicmanager)
+  - [GuildMusicManager](#guildmusicmanager)
+  - [Track](#track)
+  - [BaseVideoData](#basevideodata)
+  - [YoutubeUtils](#youtubeutils)
+  - [YoutubeVideoData](#youtubevideodata)
+  - [YoutubeChannelData](#youtubechanneldata)
+  - [YoutubePlaylistData](#youtubeplaylistdata)
+- [Examples](#examples)
+- [Example usages](#example-usages)
+  - [Join and Leave](#join-and-leave)
+  - [Play](#play)
+  - [Pause and Resume](#pause-and-resume)
+  - [Toggle Looping](#toggle-looping)
+  - [Seek a time](#seek-a-time)
+  - [Get NowPlaying Data](#get-nowplaying-data)
+  - [Volume Increase](#volume-increase)
+  - [Logging when song is finished](#logging-when-song-is-finished)
+  - [Leave when queue is finished](#leave-when-queue-is-finished)
+  - [Search and play the most related song by keywords](#search-and-play-the-most-related-song-by-keywords)
+- [Thanks](#thanks)
 
 ## Requirements
 To use this package, you must meet these requirements:
 * node.js version > 14
 * discord.js version > 13
+* FFmpeg Dependency. Can be one of those below:
+  * [`FFmpeg`](https://ffmpeg.org) (installed and added to environment)
+  * `ffmpeg-static` (npm install)
 
 ## Documentation
 ### createMusicManager
@@ -78,11 +84,18 @@ This is the most important object in this package. For most usage you only need 
 #### constructor
 ```js
 new ClientMusicManager (Client client, {
-    defaultMaxQueueSize, // the default maximum size of queue, will be automatically applied to all its `GuildMusicManager`
-    disableAutoplay      // if set to `true`, it won't automatically play the next song of the queue
-})
+    Number defaultMaxQueueSize, // the default maximum size of queue, will be automatically applied to all its `GuildMusicManager`
+    Boolean enableQueue,         // whether we should enable the default queue system
+    Boolean enableAutoplay,      // if set to `true`, it won't automatically play the next song of the queue
+    Boolean enableInlineVolume,  // whether should inline volume be enable
+    Object enableService : {     // determine which service should be enable
+      Boolean rawFile,           // ability to play raw file
+      Boolean youtube            // ability to play youtube link directly
+    }
+});
 ```
-
+Every boolean property is set to `true` except `enableInlineVolume` due to better performance. If you want to have the feature of 'adjust volumen during playing' you have to set this to true.   
+`defaultMaxQueueSize` is 99
 #### properties
 * `client` : the client that instantiated this
 * `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by their id.
@@ -127,6 +140,8 @@ new GuildMusicManager ({
 * `next()` : Get and remove the first song of the queue. If it's looping, it'll return what's playing now.
 * `hasNext()` : Does this manager has next song. If current track is looping it always returns true.
 * `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
+* `getVolume()` : get current volume. If it's `2` means the volume is `2x` louder than default.
+* `setVolume(Number number)` : set the volume of current track. You have to enable inline volume in the `ClientMusicManager` to use this function.
 * `pause()` : pause what's playing
 * `resume()` : unpause what's playing
 * `skip()` : skip what's playing
@@ -175,8 +190,23 @@ When track is construct automatically by given Youtube URL in `GuildMusicManager
 #### events
 * `end` : emits after this track finish playing
 
+### BaseVideoData
+#### constructor
+```js
+new BaseVideoData(rawData) // raw data from those module
+```
+
+#### properties
+* `type` : always `'video'`
+
+#### methods
+* `play(GuildMusicManager manager, Object customMetadata, Boolean force)` : (abstract) should be implements as using manager to play with the given custom metadata.
+
 ### YoutubeUtils
 #### methods
+* `isYoutubeLink(String link)` : (static) check if the link is a Youtube link.
+* `isPlaylistLink(String link)` : (static) check if the link is a Youtube playlist link.
+* `getVideoData(String link)` : (static) get the data of the video. Returns a `YoutubeVideoData` object if find it, or throw an Error when not data is not found.
 * `searchFirstVideo(String keywords)` : (static) Use the keywords to search, and return the first (most related) video. Returns a `YoutubeVideoData` Object.
 * `search(String keywords, Number max { Boolean disableChannel, Boolean disablePlaylist, Boolean disableVideo })` : (static) Use the keywords to search, and return at most `max` results. You can use `disableSomething` to pull the type you don't want from results. In default only video is enable. Returns an Array of `YoutubeObjectData`, which is one of `YoutubeVideoData`, `YoutubeChannelData`, `YoutubePlaylistData`.
 
@@ -191,12 +221,16 @@ new YoutubeVideoData(rawData); // raw data from ytsr
 * `type` : always `'video'`
 * `title` : title of this video
 * `url` : youtube url of this video
+* `isCrawlable` : can this video be crawl.
 * `thumbnailUrl` : url of this video's thumbnail
-* `duration` : length of this video, formatted in `mm:ss`
+* `uploadDate` : the date this video uploaded, formatted in `yyyy-mm-dd`.
+* `viewCount` : the viewCount of this video.
+* `audioUrl` : the original audio file url of this video.
 * `channel` : channel uploaded this video. This is a `YoutubeChannelData` Object.
 
 #### methods
 * `play(GuildMusicManager manager, Object customMetadata, Boolean force)` : Play this video. This behave same as `GuildMusicManager#play`. Returns same thing with `GuildMusicManager#play`.
+* `fetch()` : Fetch this video and fullfill those `undefined` properties.
 
 ### YoutubeChannelData
 #### constructor
@@ -300,6 +334,13 @@ manager.setLoop(!manager.nowPlaying.isLooping);
 <Client>.music.get(<Id>).nowPlaying
 ```
 
+### Volume Increase
+```js
+const manager = <Client>.music.get(<id>);
+manager.setVolume(manager.getVolume() + 0.1);
+```
+Notice you have to enable inline volume when create your `ClientMusicManager` to use this feature.
+
 ### Logging when song is finished
 ```js
 const manager = <Client>.music.get(<Id>);
@@ -325,7 +366,7 @@ This code implements both join and set up leave-when-finished.
 ```js
 YoutubeUtils.searchFirstVideo(<Keywords>)
   .then(data => {
-    data.play(<Client>.music.get(<Id>), { player: <User>});
+    data.play(<Client>.music.get(<Id>), { player: <User> });
   })
   .catch(err => {
     console.log(err);

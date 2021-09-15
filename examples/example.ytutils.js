@@ -13,11 +13,16 @@ const { YoutubeUtils } = require('../');
 await YoutubeUtils.searchFirstVideo('Kotoha')
   // data is an `YoutubeVideoData` Object
   .then(data => {
-    console.log('Title: ' + data.title);
-    console.log('Link : ' + data.url);
+    console.log(data);
+    return data;
+  })
+  // let's fetch this video
+  .then(data => {
+    data.fetch().then(console.log);
   })
   // an error is thrown when not found
-  .catch(() => {
+  .catch(e => {
+    console.log(e)
     console.log('No results :(');
   });
 
@@ -38,13 +43,26 @@ await YoutubeUtils.search('HoneyWorks')
 
 console.log('-------------------------------');
 
+await YoutubeUtils.getVideoData('https://www.youtube.com/watch?v=srzVhDN2zME')
+  .then(data => {
+    console.log(data);
+    return data.channel;
+  })
+  .then(channel => {
+    console.log(channel);
+    return channel
+  })
+  .then(channel => {
+    channel.fetch().then(console.log)
+  })
+
+console.log('-------------------------------');
+
 // Get Channel description
 await YoutubeUtils.searchFirstVideo('Mafumafu')
   .then(data => data.channel)
   .then(channel => {
-    channel.fetch().then(ch => {
-      console.log(ch.descriptionShort);
-    });
+    channel.fetch().then(console.log);
   })
   .catch(() => {
     console.log("No results :(")

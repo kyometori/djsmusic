@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const ytdl = require('ytdl-core');
 const Track = require('./Track.js')
+const YoutubeUtils = require('../Utils/youtube/YoutubeUtils.js');
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice');
 
 class GuildMusicManager extends EventEmitter {
@@ -30,7 +31,7 @@ class GuildMusicManager extends EventEmitter {
     });
   }
 
-  async play(url, customMetadata = {}, force = false) {
+  async play(url, customMetadata = {}, force = !this.manager.enableQueue) {
     if (!url) throw new Error('MISSING_URL');
     if (!customMetadata.player) throw new Error('UNKNOWN_PLAYER');
     if (this.queue.length >= this.MAX_QUEUE_SIZE) throw new Error('EXCEED_QUEUE_MAXSIZE');
@@ -45,37 +46,27 @@ class GuildMusicManager extends EventEmitter {
 
     // Raw files
     let track;
-    if (filter(url)) {
+    if (this.manager.enableService.rawFile && filter(url)) {
       track = new Track(url, this, customMetadata);
       success = true;
     }
 
-    // Youtube links
-    const YT_VIDEO = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
+    if (this.manager.enableService.youtube && YoutubeUtils.isYoutubeLink(url)) {
+      const data = await YoutubeUtils
+        .getVideoData(url);
+      if (!data.isCrawlable) throw new Error('UNPLAYABLE_YOUTUBE_URL');
 
-    if (YT_VIDEO.test(url)) {
-      const info = await ytdl.getInfo(url);
-      if (!info) throw new Error('INVALID_YOUTUBE_URL');
-      if (!info.videoDetails.isCrawlable) throw new Error('UNPLAYABLE_YOUTUBE_URL');
-
-      function audioFilter(formats) {
-        for (const ele of formats)
-          if (ele.codecs === 'opus' && ele.container === 'webm' && ele.audioSampleRate === '48000')
-              return ele.url;
-      }
-
-      const audioUrl = audioFilter(info.formats);
-      track = new Track(audioUrl, this, {
-        title: customMetadata.title ?? info.videoDetails.title.replace(/[!@#$%^&*()_\/\-+=\[\]?<>\\\|]/g, input => `\\${input}`),
-        lengthSeconds: info.videoDetails.lengthSeconds,
+      track = new Track(data.audioUrl, this, {
+        title: customMetadata.title ?? data.title,
+        lengthSeconds: data.lengthSeconds,
         player: customMetadata.player,
         details: {
-          thumbnailUrl: info.videoDetails.thumbnails.pop().url,
-          channelName: info.videoDetails.ownerChannelName,
-          channelUrl: info.videoDetails.ownerProfileUrl,
-          uploadDate: info.videoDetails.uploadDate,
-          viewCount: info.videoDetails.viewCount,
-          ytUrl: url,
+          thumbnailUrl: data.thumbnailUrl,
+          channelName: data.channel.name,
+          channelUrl: data.channel.url,
+          uploadDate: data.uploadDate,
+          viewCount: data.viewCount,
+          ytUrl: data.url,
           ...customMetadata.details
         }
       });
@@ -102,6 +93,17 @@ class GuildMusicManager extends EventEmitter {
     if (this.nowPlaying.isLooping) return this.nowPlaying;
     if (!this.queue.length) return undefined;
     return this.queue.shift();
+  }
+
+  setVolume(number) {
+    if (!this.manager.enableInlineVolume) throw new Error('INLINE_VOLUME_DISABLED');
+    this.nowPlaying.volume = number;
+    this.nowPlaying.resource.volume.setVolume(number);
+    if (this.nowPlaying.volume > 3) console.log('Warning: You\'re setting a volume that\'s louder than 3 times of the original. Please check if you really need this to protect your ears.');
+  }
+
+  getVolume() {
+    return this.nowPlaying.volume;
   }
 
   setLoop(loop) {

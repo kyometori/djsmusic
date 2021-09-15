@@ -12,7 +12,13 @@ class ClientMusicManager extends EventEmitter {
 
     this._data = new Map();
     this.defaultMaxQueueSize = options.defaultMaxQueueSize ?? 99;
-    this.disableAutoplay = options.disableAutoplay ?? false;
+    this.enableQueue = options.enableQueue ?? true;
+    this.enableAutoplay = options.disableAutoplay ?? true
+    this.enableInlineVolume = options.enableInlineVolume ?? false;
+    this.enableService = options.enableService ?? {
+      rawFile: true,
+      youtube: true
+    }
   }
 
   has(id) {

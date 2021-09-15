@@ -13,6 +13,7 @@ class Track extends EventEmitter {
     this.details = metadata.details ?? details;
 
     this.isLooping = false;
+    this.volume = 1;
   }
 
   get playedMs() {
@@ -30,7 +31,10 @@ class Track extends EventEmitter {
         args : ['-reconnect', '1', '-reconnect_streamed', '1', '-reconnect_delay_max', '5', ...FFMPEG_OPUS_ARGUMENTS ]
     });
     // 建立可播放的物件並回傳
-    const resource = this.resource = createAudioResource(stream, { inputType: StreamType.OggOpus , inlineVolume : true })
+    const resource = this.resource = createAudioResource(stream, {
+      inputType: StreamType.OggOpus,
+      inlineVolume : this.manager.manager.enableInlineVolume
+    });
     return resource;
   }
 }

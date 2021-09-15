@@ -10,7 +10,9 @@ client.once('ready', () => {
   console.log('I\'m ready!');
 
   // Create the music manager with default options
-  createMusicManager(client);
+  createMusicManager(client, {
+    enableInlineVolume: true,
+  });
 });
 
 client.on('messageCreate', message => {
@@ -84,6 +86,17 @@ client.on('messageCreate', message => {
     const manager = client.music.get(message.guild.id);
     manager.setLoop(!manager.nowPlaying.isLooping);
     message.reply('Toggle loop!');
+  }
+
+  // Volume Control
+  if (message.content === '!v+') {
+    const manager = client.music.get(message.guild.id);
+    manager.setVolume(manager.getVolume() + 0.1);
+  }
+
+  if (message.content === '!v-') {
+    const manager = client.music.get(message.guild.id);
+    manager.setVolume(manager.getVolume() - 0.1);
   }
 
   // Command leave

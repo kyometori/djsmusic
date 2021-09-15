@@ -21,10 +21,7 @@
   ],
   "author": "kyometori",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kyometori/djsmusic.git"
-  },
+  "repository": "git://github.com/kyometori/djsmusic",
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
     "@discordjs/voice": "^0.6.0",

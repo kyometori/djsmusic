@@ -1,7 +1,7 @@
 # @kyometori/djsmusic
 [![npm version](https://img.shields.io/npm/v/@kyometori/djsmusic.svg?maxAge=3600)](https://www.npmjs.com/package/@kyometori/djsmusic) [![downloads](https://img.shields.io/npm/dt/@kyometori/djsmusic.svg?maxAge=3600)](https://www.npmjs.com/package/@kyometori/djsmusic)   [![downloads](https://img.shields.io/github/last-commit/kyometori/djsmusic)](https://github.com/kyometori/djsmusic) [![downloads](https://img.shields.io/github/languages/code-size/kyometori/djsmusic)](https://github.com/kyometori/djsmusic)
 ## Warning
-This package is still under heavy developement, so there might be some breaking changes.
+This package is still under heavy development, so there might be some breaking changes.
 We'll try to make breaking changes as less as we can, but if there's any, we're sorry about that.
 ## Introduction
 This is a simple wrapper of @discordjs/voice library.   
@@ -14,7 +14,7 @@ const { Client } = require('discord.js');
 const { createMusicManager } = require('@kyometori/djsmusic');
 const client = new Client({ intents: ['GUILDS', 'GUILD_VOICE_STATES'] });
 
-client.once('ready' () => {
+client.once('ready', () => {
   createMusicManager(client);
   console.log('Everything is ready!');
 });
@@ -37,7 +37,7 @@ client.on('interactionCreate', interaction => {
 client.login('your-token-goes-here');
 ```
 
-## Table of Content
+## Table of contents
 - [Requirements](#requirements)
 - [Documentation](#documentation)
   - [createMusicManager](#createmusicmanager)
@@ -65,7 +65,6 @@ client.login('your-token-goes-here');
 
 ## Requirements
 To use this package, you must meet these requirements:
-* node.js version > 14
 * discord.js version > 13
 * FFmpeg Dependency. Can be one of those below:
   * [`FFmpeg`](https://ffmpeg.org) (installed and added to environment)
@@ -92,10 +91,10 @@ new ClientMusicManager (Client client, {
       Boolean rawFile,           // ability to play raw file
       Boolean youtube            // ability to play youtube link directly
     }
-});
+})
 ```
 Every boolean property is set to `true` except `enableInlineVolume` due to better performance. If you want to have the feature of 'adjust volumen during playing' you have to set this to true.   
-`defaultMaxQueueSize` is 99
+In default `defaultMaxQueueSize` is 99. Can set to `Infinity` if you don't want a limit.
 #### properties
 * `client` : the client that instantiated this
 * `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by their id.
@@ -168,7 +167,7 @@ new Track({
         player        // the one choose play this song, required
         details       // Other metadata of this track, default empty object
     }
-});
+})
 ```
 When track is construct automatically by given Youtube URL in `GuildMusicManager`, its `details` property will includes:
 * `thumbnailUrl` : the thumbnail url of this song
@@ -213,7 +212,7 @@ new BaseVideoData(rawData) // raw data from those module
 ### YoutubeVideoData
 #### constructor
 ```js
-new YoutubeVideoData(rawData); // raw data from ytsr
+new YoutubeVideoData(rawData) // raw data from ytsr
 // you can construct this by passing your own data, but you need `type: 'video'` guard in the data or will cause an Error.
 ```
 
@@ -235,7 +234,7 @@ new YoutubeVideoData(rawData); // raw data from ytsr
 ### YoutubeChannelData
 #### constructor
 ```js
-new YoutubeChannelData(rawData); // raw data from ytsr
+new YoutubeChannelData(rawData) // raw data from ytsr
 // you can construct this by passing your own data, but you need `type: 'channel'` guard in the data or will cause an Error.
 ```
 
@@ -254,7 +253,7 @@ new YoutubeChannelData(rawData); // raw data from ytsr
 ### YoutubePlaylistData
 #### constructor
 ```js
-new YoutubePlaylistData(rawData); // raw data from ytsr
+new YoutubePlaylistData(rawData) // raw data from ytsr
 // you can construct this by passing your own data, but you need `type: 'playlist'` guard in the data or will cause an Error.
 ```
 
@@ -331,7 +330,7 @@ manager.setLoop(!manager.nowPlaying.isLooping);
 ```js
 // If anything is playing, this will be a Track object
 // Otherwise it's an empty Object
-<Client>.music.get(<Id>).nowPlaying
+<Client>.music.get(<Id>).nowPlaying;
 ```
 
 ### Volume Increase

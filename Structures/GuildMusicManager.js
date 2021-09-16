@@ -20,11 +20,13 @@ class GuildMusicManager extends EventEmitter {
 
     this.player.on(AudioPlayerStatus.Idle, () => {
       this.nowPlaying.emit('end');
-      this.emit('end', this.nowPlaying);
       if (!this.manager.disableAutoplay && (this.queue.length || this.nowPlaying.isLooping)) {
-        return this.playTrack(this.next())
+        const nextTrack = this.next();
+        this.emit('end', nextTrack);
+        return this.playTrack(nextTrack);
       }
 
+      this.emit('end');
       this.emit('finish');
       this.isPlaying = false;
       this.nowPlaying = {};

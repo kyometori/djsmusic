@@ -122,7 +122,7 @@ class GuildMusicManager extends EventEmitter {
   }
 
   resume() {
-    if (this.player.state.status !== AudioPlayerStatus.Paused) throw new Error('ALREADY_PAUSED');
+    if (this.player.state.status !== AudioPlayerStatus.Paused) throw new Error('ALREADY_PLAYING');
     this.player.unpause();
   }
 

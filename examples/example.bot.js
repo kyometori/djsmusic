@@ -9,7 +9,7 @@ const client = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_VOICE_S
 client.once('ready', () => {
   console.log('I\'m ready!');
 
-  // Create the music manager with default options
+  // Create the music manager with inline volume enable
   createMusicManager(client, {
     enableInlineVolume: true,
   });
@@ -24,9 +24,9 @@ client.on('messageCreate', message => {
       .then(manager => {
 
         // when a song is finished, send the text
-        manager.on('end', () => {
-          if (manager.hasNext()) message.channel.send('Next!');
-          else message.channel.send('Finished!');
+        manager.on('end', next => {
+          if (!next) message.channel.send('Finished!');
+          else message.channel.send('Next!');
         })
       });
 

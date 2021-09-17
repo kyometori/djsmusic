@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
-const ytdl = require('ytdl-core');
 const Track = require('./Track.js')
 const YoutubeUtils = require('../Utils/youtube/YoutubeUtils.js');
+const SoundcloudUtils = require('../Utils/soundcloud/SoundcloudUtils');
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice');
 
 class GuildMusicManager extends EventEmitter {
@@ -43,7 +43,7 @@ class GuildMusicManager extends EventEmitter {
     url = url.trim();
 
     function filter(url) {
-      return ['.mp3', '.mp4', '.wav', '.ogg', '.aac'].some(ext => url.endsWith(ext));
+      return ['.mp3', '.mp4', '.wav', '.ogg', '.aac', '.flac'].some(ext => url.endsWith(ext));
     }
 
     // Raw files
@@ -63,18 +63,23 @@ class GuildMusicManager extends EventEmitter {
         lengthSeconds: data.lengthSeconds,
         player: customMetadata.player,
         details: {
-          thumbnailUrl: data.thumbnailUrl,
-          channelName: data.channel.name,
-          channelUrl: data.channel.url,
-          uploadDate: data.uploadDate,
-          viewCount: data.viewCount,
-          ytUrl: data.url,
+          from: 'Youtube',
+          data: data,
           ...customMetadata.details
         }
       });
 
       success = true;
     }
+
+    // UNDER DEVELOPMENT
+    // if (this.manager.enableService.soundcloud && SoundcloudUtils.isSoundcloudLink(url)) {
+    //   const data = await SoundcloudUtils
+    //     .getData(this.manager.soundcloudClient, url)
+    //     .then(console.log);
+    //
+    //   success = true;
+    // }
 
     if (!success) throw new Error('UNSUPPORTED_URL_TYPE');
 

@@ -94,7 +94,9 @@ new ClientMusicManager (Client client, {
 })
 ```
 Every boolean property is set to `true` except `enableInlineVolume` due to better performance. If you want to have the feature of 'adjust volumen during playing' you have to set this to true.   
-In default `defaultMaxQueueSize` is 99. Can set to `Infinity` if you don't want a limit.
+In default `defaultMaxQueueSize` is 99. Can set to `Infinity` if you don't want a limit.   
+The `enableService` is for you to enable or disable some service if you don't want your bot to play that.
+
 #### properties
 * `client` : the client that instantiated this
 * `connections` : (readonly) A Map contains all this manager's `GuildMusicManager`, mapped by their id.
@@ -102,7 +104,7 @@ In default `defaultMaxQueueSize` is 99. Can set to `Infinity` if you don't want 
 #### methods
 * `has(Snowflake id)` : if we have connection of the guild of given id in our data
 * `get(Snowflake id)` : get the GuildMusicManager object that handle the guild of given id
-* `join({ VoiceChannel channel, Boolean setMute, Boolean setDeaf })` : join the given voice channel and self mute or deaf if given. Returns a `Promise<GuildMusicManager>` which is the manager of joined guild.
+* `join({ VoiceChannel channel, Boolean setMute, Boolean setDeaf, Number maxQueueSize })` : join the given voice channel and self mute or deaf if given. Returns a `Promise<GuildMusicManager>` which is the manager of joined guild.
 * `leave(Snowflake id)` : leave the guild of given id.
 
 #### events
@@ -152,7 +154,7 @@ new GuildMusicManager ({
 * `leave` : emit after client left this guild
   * Params: `Guild guild` the guild of this manager
 * `end` : emit when a song is finished playing (same as Track#end)
-  * Params: `Track track` the track just finished
+  * Params: `Track next` the track that's gonna play after this track. If no then it will be `undefined`.
 * `finish` : emit after every song in queue finished playing
 
 ### Track
@@ -170,12 +172,8 @@ new Track({
 })
 ```
 When track is construct automatically by given Youtube URL in `GuildMusicManager`, its `details` property will includes:
-* `thumbnailUrl` : the thumbnail url of this song
-* `channelName` : the name of channel
-* `channelUrl` : the url of channel
-* `uploadDate` : the formatted upload date of this song
-* `viewCount` : the view count of this song in Youtube
-* `ytUrl` : the url of the song in Youtube
+* `from` : Always `'Youtube'`. You can use this to determine where this track is.
+* `data` : A `YoutubeVideoData` object. You can find its properties below.
 
 
 #### properties
@@ -306,7 +304,7 @@ Also we assume your `ClientMusicManager` is on `<Client>.music`.
     });
 ```
 The `url` parameter of the `play` method accept following urls:
-* Raw `mp3`, `mp4`, `wav`, `ogg`, `aac` files. The url must ended with `.(file extensions)`
+* Raw `mp3`, `mp4`, `wav`, `ogg`, `aac`, `flac` files. The url must ended with `.(file extension)`
 * A Youtube link.
 
 ### Pause and Resume
@@ -343,9 +341,9 @@ Notice you have to enable inline volume when create your `ClientMusicManager` to
 ### Logging when song is finished
 ```js
 const manager = <Client>.music.get(<Id>);
-manager.on('end', () => {
-   if (manager.hasNext()) console.log('Start playing next song...');
-   else console.log('Finish all queued songs!');
+manager.on('end', next => {
+   if (!next) console.log('Finish all queued songs!');
+   else console.log('Start playing next song...');
 });
 ```
 

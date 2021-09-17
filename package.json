@@ -1,6 +1,6 @@
 {
   "name": "@kyometori/djsmusic",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "A simple wrapper of @discordjs/voice library. This can help you make music bot easier",
   "main": "index.js",
   "scripts": {

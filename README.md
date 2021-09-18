@@ -182,7 +182,7 @@ When track is construct automatically by given Youtube URL in `GuildMusicManager
 * `lengthSeconds` : the length of this song, in seconds.
 * `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
 * `details` : the detail metadata of this track
-* `playMs` : (readonly) how many milliseconds the track played
+* `playedMs` : (readonly) how many milliseconds the track played
 
 #### events
 * `end` : emits after this track finish playing

@@ -10,6 +10,7 @@ class YoutubeVideoData extends BaseVideoData {
     this.url = rawData.url;
     this.isCrawlable = rawData.isCrawlable;
     this.thumbnailUrl = rawData.bestThumbnail?.url;
+    this.lengthSeconds = rawData.lengthSeconds;
     this.uploadDate = rawData.uploadDate;
     this.viewCount = rawData.viewCount;
     this.audioUrl = rawData.audioUrl;

@@ -85,7 +85,7 @@ This is the most important object in this package. For most usage you only need 
 new ClientMusicManager (Client client, {
     Number defaultMaxQueueSize, // the default maximum size of queue, will be automatically applied to all its `GuildMusicManager`
     Boolean enableQueue,         // whether we should enable the default queue system
-    Boolean enableAutoplay,      // if set to `true`, it won't automatically play the next song of the queue
+    Boolean enableAutoplay,      // if set to `false`, it won't automatically play the next song of the queue
     Boolean enableInlineVolume,  // whether should inline volume be enable
     Object enableService : {     // determine which service should be enable
       Boolean rawFile,           // ability to play raw file
@@ -182,6 +182,7 @@ When track is construct automatically by given Youtube URL in `GuildMusicManager
 * `lengthSeconds` : the length of this song, in seconds.
 * `player` : who pick this song. this is required but can be anything such as 'unknown', a `GuildMember` Object etc.
 * `details` : the detail metadata of this track
+* `isLooping` : whether this track looping or not
 * `playedMs` : (readonly) how many milliseconds the track played
 
 #### events

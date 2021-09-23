@@ -1,0 +1,15 @@
+{
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "examples/**/*"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "target": "es2019"
+  }
+}

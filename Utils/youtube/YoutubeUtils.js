@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const ytpl = require('ytpl');
 const YoutubeVideoData = require('./YoutubeVideoData.js');
 const YoutubeChannelData = require('./YoutubeChannelData.js');
 const YoutubePlaylistData = require('./YoutubePlaylistData.js');
@@ -43,6 +44,34 @@ class YoutubeUtils {
         });
       })
       .catch(() => {throw new Error('INVALID_YOUTUBE_URL')});
+  }
+
+  /** Returns a Promise of YoutubePlaylistData object **/
+  static getPlaylistData(link, page = Infinity) {
+    return ytpl(link, { page: page })
+      .then(playlist => {
+        const videos = playlist.items.map(v => {
+          return new YoutubeVideoData({
+            type: 'video',
+            url: v.shortUrl,
+            isCrawlable: v.isPlayable,
+            bestThumbnail: v.bestThumbnail,
+            lengthSeconds: v.durationSec,
+            author: v.author
+          });
+        });
+
+        return new YoutubePlaylistData({
+          type: 'playlist',
+          title: playlist.title,
+          firstVideo: {
+            bestThumbnail: playlist.bestThumbnail
+          },
+          data: videos,
+          owner: playlist.author
+        })
+      })
+      .catch(() => {throw new Error('INVALID_PLAYLIST_URL')});
   }
 
   /** Returns a Promise of YoutubeVideoData object **/

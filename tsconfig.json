@@ -3,11 +3,13 @@
     "**/*"
   ],
   "exclude": [
-    "examples/**/*"
+    "examples/**/*",
+    "dist/**/*"
   ],
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,
+    "removeComments": true,
     "emitDeclarationOnly": true,
     "outDir": "dist",
     "target": "es2019"

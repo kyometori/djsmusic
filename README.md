@@ -204,7 +204,8 @@ new BaseVideoData(rawData) // raw data from those module
 #### methods
 * `isYoutubeLink(String link)` : (static) check if the link is a Youtube link.
 * `isPlaylistLink(String link)` : (static) check if the link is a Youtube playlist link.
-* `getVideoData(String link)` : (static) get the data of the video. Returns a `YoutubeVideoData` object if find it, or throw an Error when not data is not found.
+* `getVideoData(String link)` : (static) get the data of the video. Returns a `YoutubeVideoData` object if find it, or throw an Error when no data have been found.
+* `getPlaylistData(String link, Number page)` : (static) get the data of the playlist. `page` determine how many pages of this playlist should be fetched. Default `Infinity`. Returns a `YoutubePlaylistData` object if find it, or throw an Error when no data have been found.
 * `searchFirstVideo(String keywords)` : (static) Use the keywords to search, and return the first (most related) video. Returns a `YoutubeVideoData` Object.
 * `search(String keywords, Number max, { Boolean disableChannel, Boolean disablePlaylist, Boolean disableVideo })` : (static) Use the keywords to search, and return at most `max` results. You can use `disableSomething` to pull the type you don't want from results. In default only video is enable. Returns an Array of `YoutubeObjectData`, which is one of `YoutubeVideoData`, `YoutubeChannelData`, `YoutubePlaylistData`.
 
@@ -259,9 +260,13 @@ new YoutubePlaylistData(rawData) // raw data from ytsr
 #### properties
 * `type` : always `playlist`.
 * `title` : the title of this playlist.
+* `data` : a `Array<YoutubeVideoData>`, contains all crawlable video inside.
 * `url` : url of this playlist.
 * `firstVideoThumbnailUrl` : thumbnail of this playlist's first video
 * `channel` : channel created this playlist. This is a `YoutubeChannelData` Object.
+
+#### methods
+* `fetch(Number page)` : fetch this playlist and fullfill the properties with its url. The `page` determine how many pages of the playlist should be fetched. Default `Infinity`.
 
 ## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).

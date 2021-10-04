@@ -3,6 +3,7 @@ declare class ClientMusicManager extends EventEmitter {
     constructor(client: any, options?: {});
     client: any;
     _data: Map<any, any>;
+    _soundcloudClient: any;
     defaultMaxQueueSize: any;
     enableQueue: any;
     enableAutoplay: any;

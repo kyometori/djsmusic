@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const GuildMusicManager = require('./GuildMusicManager.js');
+const SoundCloud = require('soundcloud-scraper');
 const { joinVoiceChannel,
         entersState,
         VoiceConnectionStatus } = require('@discordjs/voice');
@@ -11,6 +12,7 @@ class ClientMusicManager extends EventEmitter {
     this.client = client;
 
     this._data = new Map();
+    this._soundcloudClient = new SoundCloud.Client();
     this.defaultMaxQueueSize = options.defaultMaxQueueSize ?? 99;
     this.enableQueue = options.enableQueue ?? true;
     this.enableAutoplay = options.disableAutoplay ?? true

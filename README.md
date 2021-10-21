@@ -6,9 +6,9 @@ We'll try to make breaking changes as less as we can, but if there's any, we're 
 ## Introduction
 This is a simple wrapper of @discordjs/voice library.   
 You can use this package to build a music bot with your discord.js client easily.   
-**We are not discord.js developers!**   
-**This package is not related to discord.js official!**   
-**If you have any questions about this package, please don't ask in their supports**   
+
+We also have our own Classes and wrapper of ytdl, ytsr to help you process data easier, more logical, and faster.
+The current support sites are Youtube and SoundCloud (under development).
 ```js
 const { Client } = require('discord.js');
 const { createMusicManager } = require('@kyometori/djsmusic');
@@ -30,7 +30,9 @@ client.on('interactionCreate', interaction => {
 
   if (interaction.commandName === 'play') {
     const url = interaction.options.getString('url');
-    interaction.client.music.get(interaction.guild.id).play(url);
+    interaction.client.music.get(interaction.guild.id).play(url, {
+      player: interaction.member
+    });
   }
 });
 
@@ -44,11 +46,12 @@ client.login('your-token-goes-here');
   - [ClientMusicManager](#clientmusicmanager)
   - [GuildMusicManager](#guildmusicmanager)
   - [Track](#track)
-  - [BaseVideoData](#basevideodata)
   - [YoutubeUtils](#youtubeutils)
   - [YoutubeVideoData](#youtubevideodata)
   - [YoutubeChannelData](#youtubechanneldata)
   - [YoutubePlaylistData](#youtubeplaylistdata)
+  - [SoundCloudUtils](#soundcloudutils)
+  - [SoundCloudTrackData](#soundcloudtrackdata)
 - [Examples](#examples)
 - [Example usages](#example-usages)
   - [Join and Leave](#join-and-leave)
@@ -188,18 +191,6 @@ When track is construct automatically by given Youtube URL in `GuildMusicManager
 #### events
 * `end` : emits after this track finish playing
 
-### BaseVideoData
-#### constructor
-```js
-new BaseVideoData(rawData) // raw data from those module
-```
-
-#### properties
-* `type` : always `'video'`
-
-#### methods
-* `play(GuildMusicManager manager, Object customMetadata, Boolean force)` : (abstract) should be implements as using manager to play with the given custom metadata.
-
 ### YoutubeUtils
 #### methods
 * `isYoutubeLink(String link)` : (static) check if the link is a Youtube link.
@@ -267,6 +258,29 @@ new YoutubePlaylistData(rawData) // raw data from ytsr
 
 #### methods
 * `fetch(Number page)` : fetch this playlist and fullfill the properties with its url. The `page` determine how many pages of the playlist should be fetched. Default `Infinity`.
+
+### SoundCloudUtils
+#### methods
+* `isSoundCloudLink(String link)` : (static) check if the link is a kind of SoundCloud link;
+* `getTrackData(String link)` : (static) get a track's data by its link. Returns a `Promise<SoundCloudTrackData>`
+
+### SoundCloudTrackData
+#### constructor
+```js
+new SoundCloudTrackData(rawData) // raw data from soundcloud-scraper
+// you can construct this data manually and fetch it to get more informations
+```
+
+#### properties
+* `type` : always `'track'`
+* `id` : the id of this track
+* `title` : the title of this track
+* `description` : the description of this track
+* `lengthSeconds` : how long is this track, in seconds
+* `thumbnail` : thumbnail of this track
+* `url` : url of this track
+* `playCount` : the play count of this track
+* `genre`: the genre of this track
 
 ## Examples
 Examples can be found [here](https://github.com/kyometori/djsmusic/tree/main/examples).
@@ -379,4 +393,4 @@ YoutubeUtils.searchFirstVideo(<Keywords>)
 For more examples you can look at our [examples](https://github.com/kyometori/djsmusic/tree/main/examples) or look up our Documentation and create features yourself!
 
 ## Thanks
-[Junior HiZollo](https://hizollo.ddns.net) : My another project which is a Discord bot with music feature. This library is basically rewriting its music (which was also wrtten by me) and make it generic.
+[Junior HiZollo](https://hizollo.ddns.net) : My another project which is a Discord bot with music feature. This library is basically rewriting its music (which was also written by me) and make it generic.

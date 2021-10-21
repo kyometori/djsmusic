@@ -1,5 +1,7 @@
 export = YoutubeVideoData;
-declare class YoutubeVideoData extends BaseVideoData {
+declare class YoutubeVideoData {
+    constructor(rawData: any);
+    type: any;
     title: any;
     url: any;
     isCrawlable: any;
@@ -9,7 +11,7 @@ declare class YoutubeVideoData extends BaseVideoData {
     viewCount: any;
     audioUrl: any;
     channel: YoutubeChannelData;
+    play(manager: any, customMetadata: any, force: any): any;
     fetch(): any;
 }
-import BaseVideoData = require("../BaseVideoData.js");
 import YoutubeChannelData = require("./YoutubeChannelData.js");

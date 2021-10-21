@@ -1,11 +1,11 @@
 const ytdl = require('ytdl-core');
-const BaseVideoData = require('../BaseVideoData.js');
 const YoutubeChannelData = require('./YoutubeChannelData.js');
 const YoutubeUtils = require('./YoutubeUtils.js');
 
-class YoutubeVideoData extends BaseVideoData {
+class YoutubeVideoData {
   constructor(rawData) {
-    super(rawData);
+    if (rawData.type !== 'video') throw new Error('INVALID_DATA');
+    this.type = rawData.type;
     this.title = rawData.title;
     this.url = rawData.url;
     this.isCrawlable = rawData.isCrawlable;

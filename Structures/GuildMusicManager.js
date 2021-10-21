@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const Track = require('./Track.js')
 const YoutubeUtils = require('../Utils/youtube/YoutubeUtils.js');
-const SoundcloudUtils = require('../Utils/soundcloud/SoundcloudUtils');
+const SoundCloudUtils = require('../Utils/soundcloud/SoundCloudUtils');
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice');
 
 class GuildMusicManager extends EventEmitter {
@@ -46,8 +46,9 @@ class GuildMusicManager extends EventEmitter {
       return ['.mp3', '.mp4', '.wav', '.ogg', '.aac', '.flac'].some(ext => url.endsWith(ext));
     }
 
-    // Raw files
     let track;
+
+    // Raw files
     if (this.manager.enableService.rawFile && filter(url)) {
       track = new Track(url, this, customMetadata);
       success = true;
@@ -73,10 +74,20 @@ class GuildMusicManager extends EventEmitter {
     }
 
     // UNDER DEVELOPMENT
-    // if (this.manager.enableService.soundcloud && SoundcloudUtils.isSoundcloudLink(url)) {
-    //   const data = await SoundcloudUtils
-    //     .getData(this.manager.soundcloudClient, url)
-    //     .then(console.log);
+    // if (this.manager.enableService.soundcloud && SoundCloudUtils.isSoundCloudLink(url)) {
+    //   const data = await SoundCloudUtils
+    //     .getTrackData(url);
+    //
+    //   track = new Track(data.stream, this, {
+    //     title: customMetadata.title ?? data.title,
+    //     lengthSeconds: data.lengthSeconds,
+    //     player: customMetadata.player,
+    //     details: {
+    //       from: 'SoundCloud',
+    //       data: data,
+    //       ...customMetadata.details
+    //     }
+    //   });
     //
     //   success = true;
     // }

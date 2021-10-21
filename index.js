@@ -15,12 +15,13 @@ module.exports = {
   Track: require('./Structures/Track.js'),
 
   // Utils
-  //// Base
-  BaseVideoData: require('./Utils/BaseVideoData.js'),
   //// Youtube
   YoutubeUtils: require('./Utils/youtube/YoutubeUtils.js'),
   YoutubeVideoData: require('./Utils/youtube/YoutubeVideoData'),
   YoutubeChannelData: require('./Utils/youtube/YoutubeChannelData'),
-  YoutubePlaylistData: require('./Utils/youtube/YoutubePlaylistData')
+  YoutubePlaylistData: require('./Utils/youtube/YoutubePlaylistData'),
+  //// Soundcloud
+  SoundCloudUtils: require('./Utils/soundcloud/SoundCloudUtils.js'),
+  SoundCloudTrackData: require('./Utils/soundcloud/SoundCloudTrackData.js')
 
 }

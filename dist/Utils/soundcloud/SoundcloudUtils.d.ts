@@ -1,4 +1,5 @@
-export = SoundcloudUtils;
-declare class SoundcloudUtils {
-    static isSoundcloudLink(link: any): boolean;
+export = SoundCloudUtils;
+declare class SoundCloudUtils {
+    static isSoundCloudLink(link: any): boolean;
+    static getTrackData(link: any): any;
 }

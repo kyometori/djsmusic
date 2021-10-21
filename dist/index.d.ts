@@ -3,8 +3,9 @@ export declare function createMusicManager(client: any, options?: {}, property?:
 export { ClientMusicManager };
 export declare const GuildMusicManager: typeof import("./Structures/GuildMusicManager.js");
 export declare const Track: typeof import("./Structures/Track.js");
-export declare const BaseVideoData: typeof import("./Utils/BaseVideoData.js");
 export declare const YoutubeUtils: typeof import("./Utils/youtube/YoutubeUtils.js");
 export declare const YoutubeVideoData: typeof import("./Utils/youtube/YoutubeVideoData");
 export declare const YoutubeChannelData: typeof import("./Utils/youtube/YoutubeChannelData");
 export declare const YoutubePlaylistData: typeof import("./Utils/youtube/YoutubePlaylistData");
+export declare const SoundCloudUtils: typeof import("./Utils/soundcloud/SoundCloudUtils.js");
+export declare const SoundCloudTrackData: typeof import("./Utils/soundcloud/SoundCloudTrackData.js");

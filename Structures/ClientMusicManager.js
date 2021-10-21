@@ -19,7 +19,8 @@ class ClientMusicManager extends EventEmitter {
     this.enableInlineVolume = options.enableInlineVolume ?? false;
     this.enableService = options.enableService ?? {
       rawFile: true,
-      youtube: true
+      youtube: true,
+      soundcloud: true
     }
   }
 

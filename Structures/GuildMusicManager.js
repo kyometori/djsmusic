@@ -33,6 +33,12 @@ class GuildMusicManager extends EventEmitter {
     });
   }
 
+  setOnStage(yes) {
+    if (this.channel.type !== 'GUILD_STAGE_VOICE') throw new Error('NOT_STAGE_CHANNEL');
+
+    this.guild.me.voice.setSuppressed(!yes);
+  }
+
   async play(url, customMetadata = {}, force = !this.manager.enableQueue) {
     if (!url) throw new Error('MISSING_URL');
     if (!customMetadata.player) throw new Error('UNKNOWN_PLAYER');

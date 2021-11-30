@@ -72,7 +72,8 @@ class GuildMusicManager extends EventEmitter {
         details: {
           from: 'Youtube',
           data: data,
-          ...customMetadata.details
+          ...customMetadata,
+          player: undefined
         }
       });
 

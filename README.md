@@ -146,6 +146,7 @@ new GuildMusicManager ({
 * `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
 * `getVolume()` : get current volume. If it's `2` means the volume is `2x` louder than default.
 * `setVolume(Number number)` : set the volume of current track. You have to enable inline volume in the `ClientMusicManager` to use this function.
+* `setOnStage(Boolean yes)` : let the bot be on the stage if set to true, or not if set to false
 * `pause()` : pause what's playing
 * `resume()` : unpause what's playing
 * `skip()` : skip what's playing

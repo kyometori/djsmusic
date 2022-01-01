@@ -41,7 +41,6 @@ class GuildMusicManager extends EventEmitter {
 
   async play(url, customMetadata = {}, force = !this.manager.enableQueue) {
     if (!url) throw new Error('MISSING_URL');
-    if (!customMetadata.player) throw new Error('UNKNOWN_PLAYER');
     if (this.queue.length >= this.MAX_QUEUE_SIZE) throw new Error('EXCEED_QUEUE_MAXSIZE');
     let queued = true;
     let success = false;
@@ -124,7 +123,7 @@ class GuildMusicManager extends EventEmitter {
     if (!this.manager.enableInlineVolume) throw new Error('INLINE_VOLUME_DISABLED');
     this.nowPlaying.volume = number;
     this.nowPlaying.resource.volume.setVolume(number);
-    if (this.nowPlaying.volume > 3) console.log('Warning: You\'re setting a volume that\'s louder than 3 times of the original. Please check if you really need this to protect your ears.');
+    if (this.nowPlaying.volume > 3 && !this.manager.disableWarning) console.warn('Warning: You\'re setting a volume that\'s louder than 3 times of the original. Please check if you really need this to protect your ears.');
   }
 
   getVolume() {

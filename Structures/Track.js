@@ -5,6 +5,7 @@ const prism = require('prism-media');
 class Track extends EventEmitter {
   constructor(audioResource, manager, metadata) {
     super();
+    if (!metadata.player) throw new Error('MISSING_PLAYER');
     this.audioResource = audioResource;
     this.manager = manager;
     this.title = metadata.title ?? 'unknown';

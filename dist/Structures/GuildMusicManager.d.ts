@@ -16,6 +16,7 @@ declare class GuildMusicManager extends EventEmitter {
     MAX_QUEUE_SIZE: any;
     isPlaying: boolean;
     nowPlaying: {};
+    setOnStage(yes: any): void;
     play(url: any, customMetadata?: {}, force?: boolean): Promise<(boolean | Track)[]>;
     hasNext(): any;
     next(): any;

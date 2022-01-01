@@ -8,6 +8,7 @@ declare class ClientMusicManager extends EventEmitter {
     enableQueue: any;
     enableAutoplay: any;
     enableInlineVolume: any;
+    disableWarning: any;
     enableService: any;
     has(id: any): boolean;
     get(id: any): any;

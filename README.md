@@ -90,6 +90,7 @@ new ClientMusicManager (Client client, {
     Boolean enableQueue,         // whether we should enable the default queue system
     Boolean enableAutoplay,      // if set to `false`, it won't automatically play the next song of the queue
     Boolean enableInlineVolume,  // whether should inline volume be enable
+    Boolean disableWarning,      // whether we should show warnings
     Object enableService : {     // determine which service should be enable
       Boolean rawFile,           // ability to play raw file
       Boolean youtube            // ability to play youtube link directly
@@ -146,6 +147,8 @@ new GuildMusicManager ({
 * `seek(Number time)` : Seek a specific time of current song. Time is in milliseconds. If the number is larger than the total time it'll throw a `INVALID_SEEK_TIME` Error.
 * `getVolume()` : get current volume. If it's `2` means the volume is `2x` louder than default.
 * `setVolume(Number number)` : set the volume of current track. You have to enable inline volume in the `ClientMusicManager` to use this function.
+* `setOnStage(Boolean yes)` : let the bot be on the stage if set to true, or not if set to false
+* `setLoop(Boolean loop)` : loop the current track or not, set to true to loop
 * `pause()` : pause what's playing
 * `resume()` : unpause what's playing
 * `skip()` : skip what's playing

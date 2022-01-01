@@ -17,6 +17,7 @@ class ClientMusicManager extends EventEmitter {
     this.enableQueue = options.enableQueue ?? true;
     this.enableAutoplay = options.disableAutoplay ?? true
     this.enableInlineVolume = options.enableInlineVolume ?? false;
+    this.disableWarning = options.disableWarning ?? false;
     this.enableService = options.enableService ?? {
       rawFile: true,
       youtube: true,
